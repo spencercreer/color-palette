@@ -5,15 +5,23 @@ $(document).ready(function() {
         let r = $('#red-input').val()
         let g = $('#green-input').val()
         let b = $('#blue-input').val()
-        hexColor = generateHexCode(r, g, b)
-        $('#hex-input').val(hexColor.substr(1,6))
-        $('.jumbotron').css("background-color", hexColor)
+        if(r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0){
+            alert("Invalid RGB code")
+        } else {
+            hexColorCode = generateHexCode(r, g, b)
+            $('#hex-input').val(hexColorCode.substr(1,6))
+            $('.jumbotron').css("background-color", hexColorCode)
+            $('#color-list').prepend(
+                `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}">
+                    ${hexColorCode}<br>rgb(${r}, ${g}, ${b})
+                </div>`
+            )
+        }
     })
 
     function generateHexCode(r, g, b) {
         let colorArray = [r, g, b]
         let hexArray = []
-        console.log(colorArray)
         for(let i = 0; i < colorArray.length; i++) {
           let quotient = Math.trunc(parseInt(colorArray[i])/16)
           let remainder = parseInt(colorArray[i])%16
@@ -38,7 +46,6 @@ $(document).ready(function() {
         }
         hexArray.unshift('#')
         let hexColorCode = hexArray.join('')
-        console.log(hexColorCode)
         return hexColorCode
       };
 })
