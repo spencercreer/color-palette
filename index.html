@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>HexaColor</title>
+    <title>Color Palette</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,10 +14,9 @@
 
 <body>
     <div class="jumbotron mb-0">
-        <h1 class="display-3">HexaPalette</h1>
+        <h1 class="display-3">Color Palette</h1>
         <p class="lead">Enter a hexadecimal or rgb color code to convert</p>
         <hr class="my-2">
-
         <form>
             <div class="form-group">
                 <div class="input-group mb-2">
@@ -28,14 +27,15 @@
                     <input type="number" class="form-control" id="green-input" placeholder="Green" min="0" max="255">
                     <input type="number" class="form-control" id="blue-input" placeholder="Blue" min="0" max="255">
                 </div>
+                <button type="submit" id="convert-rgb" class="btn btn-primary btn-block mb-2">Convert RGB to Hex</button>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <div class="input-group-text">#</div>
                     </div>
-                    <input type="text" class="form-control" id="hex-input" placeholder="Hexidecimal" disabled>
+                    <input type="text" class="form-control" id="hex-input" placeholder="Hexidecimal">
                 </div>
+                <button type="submit" id="convert-hex" class="btn btn-primary btn-block">Convert Hex to RGB</button>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
     <div id="color-list"></div>
