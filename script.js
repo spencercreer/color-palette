@@ -27,7 +27,7 @@ $(document).ready(function () {
   function setStyling(hexColorCode, rgbColorCode) {
     $('.jumbotron').css("background-color", hexColorCode)
     $('#color-list').prepend(
-      `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}">
+      `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; border-radius: 0px;">
           ${hexColorCode}<br>rgb(${rgbColorCode[0]}, ${rgbColorCode[1]}, ${rgbColorCode[2]})
         </div>`
     )
