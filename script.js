@@ -25,9 +25,18 @@ $(document).ready(function () {
   })
 
   function setStyling(hexColorCode, rgbColorCode) {
+    let textColor
+    let complimentaryColor = generateHexCode(255 - parseInt(rgbColorCode[0]), 255 - parseInt(rgbColorCode[1]), 255 - parseInt(rgbColorCode[2]))
+    if(parseInt(rgbColorCode[0]) + parseInt(rgbColorCode[1]) + parseInt(rgbColorCode[2]) < 150) {
+      textColor = "#DCDCDC"
+    } else {
+      textColor = "black"
+    }
+    $('.jumbotron').css("color", textColor)
     $('.jumbotron').css("background-color", hexColorCode)
+    // $('btn').css("background-color", complimentaryColor)
     $('#color-list').prepend(
-      `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; border-radius: 0px;">
+      `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; color:${textColor}; border-radius: 0px;">
           ${hexColorCode}<br>rgb(${rgbColorCode[0]}, ${rgbColorCode[1]}, ${rgbColorCode[2]})
         </div>`
     )
