@@ -32,9 +32,9 @@ $(document).ready(function () {
     } else {
       textColor = "black"
     }
-    $('.jumbotron').css("color", textColor)
+    $('.jumbotron').css("color", complimentaryColor)
     $('.jumbotron').css("background-color", hexColorCode)
-    // $('btn').css("background-color", complimentaryColor)
+    // $('.btn-block').css("background-color", complimentaryColor)
     $('#color-list').prepend(
       `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; color:${textColor}; border-radius: 0px;">
           ${hexColorCode}<br>rgb(${rgbColorCode[0]}, ${rgbColorCode[1]}, ${rgbColorCode[2]})
