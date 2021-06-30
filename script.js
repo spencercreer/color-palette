@@ -1,45 +1,90 @@
 $(document).ready(function () {
-  $('#convert-rgb').on('click', function (e) {
+  // On page load generate a random hexadecimal color code and rgb code
+  let randomHexColor = Math.floor(Math.random() * 0xEEEEEE + 0x111111).toString(16).toUpperCase()
+  let randomRgbArray = generateRgbCode(randomHexColor)
+
+  //Set input values to randomly generated color code
+  $('#red-input').val(randomRgbArray[0])
+  $('#green-input').val(randomRgbArray[1])
+  $('#blue-input').val(randomRgbArray[2])
+  $('#hex-input').val(randomHexColor.substr(0, 6))
+
+  // set body background color and text color
+  setStyling('#' + randomHexColor, randomRgbArray)
+
+  $('.rgb-code-input').keyup(function(e){
+    console.log(e.keyCode)
+    if(e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode === 8 || e.keyCode === 46) {
+      let r = $('#red-input').val()
+      let g = $('#green-input').val()
+      let b = $('#blue-input').val()
+      if(r === '' || g === '' || b === '' || r > 255 || g > 255 || b > 255) {
+        console.log('at least one rgb is invalid')
+      } else {
+        let rgbColorCode = [r, g, b]
+        let hexColorCode = generateHexCode(r, g, b)
+        $('#hex-input').val(hexColorCode.substr(1, 6))
+        setStyling(hexColorCode, rgbColorCode)
+      }
+    }
+  })
+
+  $('.hex-code-input').keyup(function(e){
+    console.log(e.keyCode)
+    if(e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode === 8 || e.keyCode === 46) {
+      let hex = $('#hex-input').val()
+      console.log(hex)
+      // if(r === '' || g === '' || b === '' || r > 255 || g > 255 || b > 255) {
+      //   console.log('at least one rgb is invalid')
+      // } else {
+      //   let rgbColorCode = [r, g, b]
+      //   let hexColorCode = generateHexCode(r, g, b)
+      //   $('#hex-input').val(hexColorCode.substr(1, 6))
+      //   setStyling(hexColorCode, rgbColorCode)
+      // }
+    }
+  })
+
+  $('#save-color').click(function (e) {
     e.preventDefault()
+    let textColor
     let r = $('#red-input').val()
     let g = $('#green-input').val()
     let b = $('#blue-input').val()
-    let rgbColorCode = [r, g, b]
-    if (r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0) {
-      alert("Invalid RGB code")
+    let hexColorCode = '#' + $('#hex-input').val()
+    console.log(hexColorCode)
+    if(parseInt(r) + parseInt(g) + parseInt(b) < 150) {
+      textColor = "#DCDCDC"
     } else {
-      let hexColorCode = generateHexCode(r, g, b)
-      $('#hex-input').val(hexColorCode.substr(1, 6))
-      setStyling(hexColorCode, rgbColorCode)
+      textColor = "black"
     }
+    $('#color-list').prepend(
+      `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; color:${textColor}; border-radius: 0px;">
+          ${hexColorCode}<br>rgb(${r}, ${g}, ${b})
+        </div>`
+    )
   })
-  
-  $('#convert-hex').on('click', function (e) {
-    e.preventDefault()
-    let hex = $('#hex-input').val()
-    let rgbColorCode = generateRgbCode(hex)
-    $('#red-input').val(rgbColorCode[0])
-    $('#green-input').val(rgbColorCode[1])
-    $('#blue-input').val(rgbColorCode[2])
-    setStyling('#' + hex, rgbColorCode)
-  })
+
+  // $('#convert-hex').on('click', function (e) {
+  //   e.preventDefault()
+  //   let hex = $('#hex-input').val()
+  //   let rgbColorCode = generateRgbCode(hex)
+  //   $('#red-input').val(rgbColorCode[0])
+  //   $('#green-input').val(rgbColorCode[1])
+  //   $('#blue-input').val(rgbColorCode[2])
+  //   setStyling('#' + hex, rgbColorCode)
+  // })
 
   function setStyling(hexColorCode, rgbColorCode) {
     let textColor
     let complimentaryColor = generateHexCode(255 - parseInt(rgbColorCode[0]), 255 - parseInt(rgbColorCode[1]), 255 - parseInt(rgbColorCode[2]))
-    if(parseInt(rgbColorCode[0]) + parseInt(rgbColorCode[1]) + parseInt(rgbColorCode[2]) < 150) {
+    if(parseInt(rgbColorCode[0]) + parseInt(rgbColorCode[1]) + parseInt(rgbColorCode[2]) < 160) {
       textColor = "#DCDCDC"
     } else {
       textColor = "black"
     }
     $('.jumbotron').css("color", complimentaryColor)
     $('.jumbotron').css("background-color", hexColorCode)
-    // $('.btn-block').css("background-color", complimentaryColor)
-    $('#color-list').prepend(
-      `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; color:${textColor}; border-radius: 0px;">
-          ${hexColorCode}<br>rgb(${rgbColorCode[0]}, ${rgbColorCode[1]}, ${rgbColorCode[2]})
-        </div>`
-    )
   }
 
   function generateHexCode(r, g, b) {
@@ -83,17 +128,17 @@ $(document).ready(function () {
       let sum = 0
       let k = 1
       for (let j = 0; j < hex.length; j++) {
-        if (hex[j] === "A") {
+        if (hex[j] === "A" || hex[j] === "a") {
           sum += 10 * 16 ** k
-        } else if (hex[j] === "B") {
+        } else if (hex[j] === "B" || hex[j] === "b") {
           sum += 11 * 16 ** k
-        } else if (hex[j] === "C") {
+        } else if (hex[j] === "C" || hex[j] === "c") {
           sum += 12 * 16 ** k
-        } else if (hex[j] === "D") {
+        } else if (hex[j] === "D" || hex[j] === "d") {
           sum += 13 * 16 ** k
-        } else if (hex[j] === "E") {
+        } else if (hex[j] === "E" || hex[j] === "e") {
           sum += 14 * 16 ** k
-        } else if (hex[j] === "F") {
+        } else if (hex[j] === "F" || hex[j] === "f") {
           sum += 15 * 16 ** k
         } else {
           sum += parseInt(hex[j]) * 16 ** k
