@@ -1,63 +1,91 @@
 $(document).ready(function () {
-  // On page load generate a random hexadecimal color code and rgb code
-  let randomHexColor = Math.floor(Math.random() * 0xEEEEEE + 0x111111).toString(16).toUpperCase()
+  // on page load generate a random hexadecimal color code and rgb code
+  let randomHexColor = Math.floor(Math.random() * 0xEEEEEE + 0x111111).toString(16).toLowerCase()
   let randomRgbArray = generateRgbCode(randomHexColor)
-
-  //Set input values to randomly generated color code
+  // set input values to randomly generated color code
   $('#red-input').val(randomRgbArray[0])
   $('#green-input').val(randomRgbArray[1])
   $('#blue-input').val(randomRgbArray[2])
   $('#hex-input').val(randomHexColor.substr(0, 6))
-
   // set body background color and text color
   setStyling('#' + randomHexColor, randomRgbArray)
 
-  $('.rgb-code-input').keyup(function(e){
-    console.log(e.keyCode)
-    if(e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode === 8 || e.keyCode === 46) {
+  // RGB input keyup event
+  $('.rgb-code-input').keyup(function (e) {
+    if ((e.key >= 0 && e.key <= 9) || e.keyCode === 8 || e.keyCode === 46) {
+      // if key code is numeric, backspace, or delete
       let r = $('#red-input').val()
       let g = $('#green-input').val()
       let b = $('#blue-input').val()
-      if(r === '' || g === '' || b === '' || r > 255 || g > 255 || b > 255) {
+      if (r === '' || g === '' || b === '' || r > 255 || g > 255 || b > 255) {
+        // RGB input is empty or greater than 255
         console.log('at least one rgb is invalid')
       } else {
+        // all valid RGB inputs, generate hexadecimal code
         let rgbColorCode = [r, g, b]
         let hexColorCode = generateHexCode(r, g, b)
         $('#hex-input').val(hexColorCode.substr(1, 6))
+        // set body background color and text color
         setStyling(hexColorCode, rgbColorCode)
       }
     }
   })
 
-  $('.hex-code-input').keyup(function(e){
+  // hex input keyup event
+  $('.hex-code-input').keyup(function (e) {
     console.log(e.keyCode)
-    if(e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode === 8 || e.keyCode === 46) {
-      let hex = $('#hex-input').val()
-      console.log(hex)
-      // if(r === '' || g === '' || b === '' || r > 255 || g > 255 || b > 255) {
-      //   console.log('at least one rgb is invalid')
-      // } else {
-      //   let rgbColorCode = [r, g, b]
-      //   let hexColorCode = generateHexCode(r, g, b)
-      //   $('#hex-input').val(hexColorCode.substr(1, 6))
-      //   setStyling(hexColorCode, rgbColorCode)
-      // }
+    if ((e.key >= 0 && e.key <= 9) || (e.keyCode >= 65 && e.keyCode <= 90) || e.keyCode === 8 || e.keyCode === 46) {
+      // if key code is numeric, alphabetic, backspace, or delete
+      let hex = $('#hex-input').val().toLowerCase()
+      if(hex.length === 6) {
+        // full hexadecimal color code entered, conver hexadecimal string to number type
+        hexNumber = parseInt('0x' + hex)
+        if(hexNumber >= 0 && hexNumber <= 0xFFFFFF) {
+          // hexadecimal number is between 0 and rgb(255, 255, 255), convert to rgb and display to inputs
+          let rgbColorCode = generateRgbCode(hex)
+          $('#red-input').val(rgbColorCode[0])
+          $('#green-input').val(rgbColorCode[1])
+          $('#blue-input').val(rgbColorCode[2])
+          // set body background color and text color
+          setStyling('#' + hex, rgbColorCode)
+        }
+      }
     }
   })
 
+  function setStyling(hexColorCode, rgbColorCode) {
+    // determine complimentary color and set text color
+    let complimentaryColor = generateHexCode(255 - parseInt(rgbColorCode[0]), 255 - parseInt(rgbColorCode[1]), 255 - parseInt(rgbColorCode[2]))
+    let textColor
+    if (parseInt(rgbColorCode[0]) + parseInt(rgbColorCode[1]) + parseInt(rgbColorCode[2]) < 160) {
+      // if background color is dark, make text color light gray
+      textColor = "#DCDCDC"
+    } else {
+      // else, text color black
+      textColor = "black"
+    }
+    // set jumbotron text color and background color 
+    $('.jumbotron').css("color", complimentaryColor)
+    $('.jumbotron').css("background-color", hexColorCode)
+  }
+
+  // Save '+' button click
   $('#save-color').click(function (e) {
     e.preventDefault()
+    // declare and set variables
     let textColor
     let r = $('#red-input').val()
     let g = $('#green-input').val()
     let b = $('#blue-input').val()
     let hexColorCode = '#' + $('#hex-input').val()
-    console.log(hexColorCode)
-    if(parseInt(r) + parseInt(g) + parseInt(b) < 150) {
+    if (parseInt(r) + parseInt(g) + parseInt(b) < 160) {
+      // if background color is dark, make text color light gray
       textColor = "#DCDCDC"
     } else {
+      // else, text color black
       textColor = "black"
     }
+    // prepend an alert with user entered background color
     $('#color-list').prepend(
       `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; color:${textColor}; border-radius: 0px;">
           ${hexColorCode}<br>rgb(${r}, ${g}, ${b})
@@ -65,28 +93,7 @@ $(document).ready(function () {
     )
   })
 
-  // $('#convert-hex').on('click', function (e) {
-  //   e.preventDefault()
-  //   let hex = $('#hex-input').val()
-  //   let rgbColorCode = generateRgbCode(hex)
-  //   $('#red-input').val(rgbColorCode[0])
-  //   $('#green-input').val(rgbColorCode[1])
-  //   $('#blue-input').val(rgbColorCode[2])
-  //   setStyling('#' + hex, rgbColorCode)
-  // })
-
-  function setStyling(hexColorCode, rgbColorCode) {
-    let textColor
-    let complimentaryColor = generateHexCode(255 - parseInt(rgbColorCode[0]), 255 - parseInt(rgbColorCode[1]), 255 - parseInt(rgbColorCode[2]))
-    if(parseInt(rgbColorCode[0]) + parseInt(rgbColorCode[1]) + parseInt(rgbColorCode[2]) < 160) {
-      textColor = "#DCDCDC"
-    } else {
-      textColor = "black"
-    }
-    $('.jumbotron').css("color", complimentaryColor)
-    $('.jumbotron').css("background-color", hexColorCode)
-  }
-
+  // convert r, g, b values to hexadecimal
   function generateHexCode(r, g, b) {
     let colorArray = [r, g, b]
     let hexArray = []
@@ -95,28 +102,16 @@ $(document).ready(function () {
       let remainder = parseInt(colorArray[i]) % 16
       let hueArray = [quotient, remainder]
       for (let j = 0; j < hueArray.length; j++) {
-        if (parseInt(hueArray[j]) === 10) {
-          hexArray.push('A')
-        } else if (parseInt(hueArray[j]) === 11) {
-          hexArray.push('B')
-        } else if (parseInt(hueArray[j]) === 12) {
-          hexArray.push('C')
-        } else if (parseInt(hueArray[j]) === 13) {
-          hexArray.push('D')
-        } else if (parseInt(hueArray[j]) === 14) {
-          hexArray.push('E')
-        } else if (parseInt(hueArray[j]) === 15) {
-          hexArray.push('F')
-        } else {
-          hexArray.push(parseInt(hueArray[j]).toString())
-        }
+        hexArray.push(parseInt(hueArray[j]).toString(16))
       }
     }
     hexArray.unshift('#')
     let hexColorCode = hexArray.join('')
+    console.log(hexColorCode)
     return hexColorCode
   }
 
+  // convert hexadecimal value to r, g, b
   function generateRgbCode(hex) {
     let rHex = hex.substr(0, 2)
     let gHex = hex.substr(2, 2)
