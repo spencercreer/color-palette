@@ -22,7 +22,7 @@ Repository: [https://github.com/spencercreer/color-palette](https://github.com/s
 ## Animation
 The following animation demonstrates the application functionality:
 <br>
-![Color Palette animation](TBD)
+![Color Palette animation](./assets/color-palette.gif)
 ## Instructions
 The user may enter an RGB or hexadecimal color code and click the associated convert button. The application will convert the color code to the other format and the entered color will be displayed on the screen.
 
