@@ -2,6 +2,36 @@ $(document).ready(function () {
   // on page load generate a random hexadecimal color code and rgb code
   let randomHexColor = Math.floor(Math.random() * 0xEEEEEE + 0x111111).toString(16).toLowerCase()
   let randomRgbArray = generateRgbCode(randomHexColor)
+
+  // get saved colors from local storage and 
+  if(localStorage.getItem("Colors")){
+    var palette = JSON.parse(localStorage.getItem('Colors'))
+    console.log(palette)
+    for(i=0; i<palette.length; i++){
+      console.log(palette[i])
+      let colorCode = palette[i]
+      let hexColorCode = '#' + colorCode
+      let rgbColorCode = generateRgbCode(colorCode)
+      let r = rgbColorCode[0]
+      let g = rgbColorCode[1]
+      let b = rgbColorCode[2]
+      let textColor
+      if (parseInt(r) + parseInt(g) + parseInt(b) < 160) {
+        // if background color is dark, make text color light gray
+        textColor = "#DCDCDC"
+      } else {
+        // else, text color black
+        textColor = "black"
+      }
+      $('#color-list').prepend(
+        `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; color:${textColor}; border-radius: 0px;">
+            ${hexColorCode}<br>rgb(${r}, ${g}, ${b})
+          </div>`
+      )
+    }
+  } else {
+    var palette = []
+  }
   // set input values to randomly generated color code
   $('#red-input').val(randomRgbArray[0])
   $('#green-input').val(randomRgbArray[1])
@@ -77,7 +107,8 @@ $(document).ready(function () {
     let r = $('#red-input').val()
     let g = $('#green-input').val()
     let b = $('#blue-input').val()
-    let hexColorCode = '#' + $('#hex-input').val()
+    let colorCode = $('#hex-input').val()
+    let hexColorCode = '#' + colorCode
     if (parseInt(r) + parseInt(g) + parseInt(b) < 160) {
       // if background color is dark, make text color light gray
       textColor = "#DCDCDC"
@@ -85,6 +116,8 @@ $(document).ready(function () {
       // else, text color black
       textColor = "black"
     }
+    palette.push(colorCode)
+    localStorage.setItem("Colors", JSON.stringify(palette))
     // prepend an alert with user entered background color
     $('#color-list').prepend(
       `<div class="alert mb-0" role="alert" style="background-color:${hexColorCode}; color:${textColor}; border-radius: 0px;">
@@ -107,7 +140,6 @@ $(document).ready(function () {
     }
     hexArray.unshift('#')
     let hexColorCode = hexArray.join('')
-    console.log(hexColorCode)
     return hexColorCode
   }
 
